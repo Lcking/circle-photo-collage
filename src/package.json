@@ -1,0 +1,49 @@
+{
+  "name": "ring-collage-designer",
+  "version": "2.0.0",
+  "description": "圆环图片创意拼接设计器 - 支持6种形状模板的创意图片编辑工具",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/ring-collage-designer.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "tailwindcss",
+    "image-editor",
+    "svg",
+    "canvas",
+    "photo-collage",
+    "ring-mask",
+    "creative-design"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/ring-collage-designer/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/ring-collage-designer#readme",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lucide-react": "^0.344.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6"
+  }
+}

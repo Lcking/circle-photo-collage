@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  ring-collage-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ring-collage-designer
+    ports:
+      - "3000:80"  # 将容器的80端口映射到主机的3000端口
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # 可选：挂载自定义nginx配置
+    # volumes:
+    #   - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
