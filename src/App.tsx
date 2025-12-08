@@ -7,13 +7,29 @@ import { seededRandom } from './utils/helpers';
 import type { ShapeType, ImagePosition } from './types';
 
 export default function App() {
+  // Generate lightweight SVG placeholder images as base64 data URIs
+  // This avoids loading 6 x ~1MB remote images on initial page load
+  const generatePlaceholderSVG = (color1: string, color2: string, index: number) => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+      <defs>
+        <linearGradient id="grad${index}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:${color1};stop-opacity:1" />
+          <stop offset="100%" style="stop-color:${color2};stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#grad${index})"/>
+      <text x="200" y="200" font-family="system-ui" font-size="48" fill="white" fill-opacity="0.6" text-anchor="middle" dominant-baseline="middle">${index + 1}</text>
+    </svg>`;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+  };
+
   const defaultImages = [
-    'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xvcmZ1bCUyMGFic3RyYWN0fGVufDF8fHx8MTc2NDU1Njc5N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvY2VhbiUyMGJlYWNofGVufDF8fHx8MTc2NDQ5MDA3N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    'https://images.unsplash.com/photo-1493134799591-2c9eed26201a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaXR5JTIwc2t5bGluZXxlbnwxfHx8fDE3NjQ1MTMzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb3Jlc3QlMjB0cmVlc3xlbnwxfHx8fDE3NjQ1NDgzNzF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    'https://images.unsplash.com/photo-1614935981447-893ce3858657?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNlcnQlMjBzdW5zZXR8ZW58MXx8fHwxNzY0NDk5MDk2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    'https://images.unsplash.com/photo-1602938016996-a03a287ca891?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmbG93ZXJzJTIwZ2FyZGVufGVufDF8fHx8MTc2NDU3NDM4MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
+    generatePlaceholderSVG('#8B5CF6', '#EC4899', 0), // Purple to Pink
+    generatePlaceholderSVG('#3B82F6', '#06B6D4', 1), // Blue to Cyan
+    generatePlaceholderSVG('#10B981', '#34D399', 2), // Green shades
+    generatePlaceholderSVG('#F59E0B', '#EF4444', 3), // Orange to Red
+    generatePlaceholderSVG('#6366F1', '#8B5CF6', 4), // Indigo to Purple
+    generatePlaceholderSVG('#EC4899', '#F43F5E', 5), // Pink to Rose
   ];
 
   const [segmentCount, setSegmentCount] = useState(6);
@@ -417,12 +433,13 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Hero Section - Ultra Premium Design */}
-      <div className="relative overflow-hidden">
-        {/* Animated Background Elements */}
+      {/* min-h-[600px] md:min-h-[700px] prevents CLS by reserving layout space */}
+      <div className="relative overflow-hidden min-h-[600px] md:min-h-[700px]">
+        {/* Animated Background Elements - use will-change for GPU acceleration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute -top-20 -right-20 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl animate-pulse will-change-transform"></div>
+          <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl animate-pulse will-change-transform" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl will-change-transform"></div>
           {/* Darker overlay for text contrast */}
           <div className="absolute inset-0 bg-slate-900/40"></div>
           {/* Subtle grid pattern */}
