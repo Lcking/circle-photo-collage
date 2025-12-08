@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  circle-photo-collage:
+    build: .
+    container_name: circle-photo-collage
+    restart: unless-stopped
+    ports:
+      - "3080:80" # Access at http://your-nas-ip:3080
+    # Optional: Resource limits for NAS
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

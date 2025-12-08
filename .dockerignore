@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build output (we rebuild in Docker)
+build
+dist
+
+# Development files
+.git
+.gitignore
+*.md
+.DS_Store
+.env*
+.vscode
+.idea
+
+# Test files
+*.test.*
+*.spec.*
+coverage
+
+# Docker files (don't need to copy these into the image)
+Dockerfile*
+docker-compose*
+.dockerignore
