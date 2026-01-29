@@ -379,6 +379,11 @@ export const RingSegment = memo(function RingSegment({
   const imageX = (100 - imageSize) / 2 + position.x * 50;
   const imageY = (100 - imageSize) / 2 + position.y * 50;
 
+  // 计算旋转变换（围绕图片中心旋转）
+  const centerX = imageX + imageSize / 2;
+  const centerY = imageY + imageSize / 2;
+  const transform = `rotate(${position.rotation} ${centerX} ${centerY})`;
+
   // 生成裂纹线条（仅用于破碎镜面多图模式）
   let crackLines: JSX.Element[] = [];
   if (shapeType === 'shattered' && !isSingleImageMode) {
@@ -424,6 +429,7 @@ export const RingSegment = memo(function RingSegment({
         y={imageY}
         width={imageSize}
         height={imageSize}
+        transform={transform}
         preserveAspectRatio="xMidYMid slice"
         mask={`url(#${maskId})`}
       />

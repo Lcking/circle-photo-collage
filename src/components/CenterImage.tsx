@@ -27,6 +27,11 @@ export const CenterImage = memo(function CenterImage({
     const imageX = (100 - imageSize) / 2 + position.x * 50;
     const imageY = (100 - imageSize) / 2 + position.y * 50;
 
+    // 计算旋转变换（围绕图片中心旋转）
+    const centerX = imageX + imageSize / 2;
+    const centerY = imageY + imageSize / 2;
+    const transform = `rotate(${position.rotation} ${centerX} ${centerY})`;
+
     return (
         <>
             <defs>
@@ -40,6 +45,7 @@ export const CenterImage = memo(function CenterImage({
                 y={imageY}
                 width={imageSize}
                 height={imageSize}
+                transform={transform}
                 preserveAspectRatio="xMidYMid slice"
                 mask={`url(#${maskId})`}
             />

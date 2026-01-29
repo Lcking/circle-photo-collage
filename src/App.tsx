@@ -45,13 +45,13 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [selectedSegment, setSelectedSegment] = useState<number | null>(null);
   const [imagePositions, setImagePositions] = useState<ImagePosition[]>(
-    Array(8).fill(null).map(() => ({ x: 0, y: 0, scale: 1 }))
+    Array(8).fill(null).map(() => ({ x: 0, y: 0, scale: 1, rotation: 0 }))
   );
   const svgRef = useRef<SVGSVGElement>(null);
 
   // 中心图片状态
   const [centerImage, setCenterImage] = useState<string | null>(null);
-  const [centerImagePosition, setCenterImagePosition] = useState<ImagePosition>({ x: 0, y: 0, scale: 1 });
+  const [centerImagePosition, setCenterImagePosition] = useState<ImagePosition>({ x: 0, y: 0, scale: 1, rotation: 0 });
   const [selectedCenterImage, setSelectedCenterImage] = useState(false);
 
   const handleSegmentCountChange = useCallback((count: number) => {
@@ -76,7 +76,7 @@ export default function App() {
     }
   }, []);
 
-  const updateImagePosition = useCallback((index: number, key: 'x' | 'y' | 'scale', value: number) => {
+  const updateImagePosition = useCallback((index: number, key: 'x' | 'y' | 'scale' | 'rotation', value: number) => {
     setImagePositions(prev => {
       const newPositions = [...prev];
       newPositions[index] = { ...newPositions[index], [key]: value };
@@ -97,7 +97,7 @@ export default function App() {
   }, []);
 
   // 更新中心图片位置
-  const updateCenterImagePosition = useCallback((key: 'x' | 'y' | 'scale', value: number) => {
+  const updateCenterImagePosition = useCallback((key: 'x' | 'y' | 'scale' | 'rotation', value: number) => {
     setCenterImagePosition(prev => ({ ...prev, [key]: value }));
   }, []);
 
@@ -337,6 +337,13 @@ export default function App() {
         const offsetX = (size - imgSize) / 2 + pos.x * size * 0.5;
         const offsetY = (size - imgSize) / 2 + pos.y * size * 0.5;
 
+        // 应用旋转变换
+        const imgCenterX = offsetX + imgSize / 2;
+        const imgCenterY = offsetY + imgSize / 2;
+        ctx.translate(imgCenterX, imgCenterY);
+        ctx.rotate(pos.rotation * Math.PI / 180);
+        ctx.translate(-imgCenterX, -imgCenterY);
+
         ctx.drawImage(img, offsetX, offsetY, imgSize, imgSize);
 
         ctx.restore();
@@ -389,6 +396,13 @@ export default function App() {
           const imgSize = size * pos.scale;
           const offsetX = (size - imgSize) / 2 + pos.x * size * 0.5;
           const offsetY = (size - imgSize) / 2 + pos.y * size * 0.5;
+
+          // 应用旋转变换
+          const imgCenterX = offsetX + imgSize / 2;
+          const imgCenterY = offsetY + imgSize / 2;
+          ctx.translate(imgCenterX, imgCenterY);
+          ctx.rotate(pos.rotation * Math.PI / 180);
+          ctx.translate(-imgCenterX, -imgCenterY);
 
           ctx.drawImage(centerImg, offsetX, offsetY, imgSize, imgSize);
           ctx.restore();
@@ -857,11 +871,27 @@ export default function App() {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-white text-xs mb-1">
+                      Rotation: {imagePositions[selectedSegment].rotation.toFixed(0)}°
+                    </label>
+                    <input
+                      type="range"
+                      min="-180"
+                      max="180"
+                      step="1"
+                      value={imagePositions[selectedSegment].rotation}
+                      onChange={(e) => updateImagePosition(selectedSegment, 'rotation', Number(e.target.value))}
+                      className="w-full h-2 bg-purple-300/30 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    />
+                  </div>
+
                   <button
                     onClick={() => {
                       updateImagePosition(selectedSegment, 'x', 0);
                       updateImagePosition(selectedSegment, 'y', 0);
                       updateImagePosition(selectedSegment, 'scale', 1);
+                      updateImagePosition(selectedSegment, 'rotation', 0);
                     }}
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition-all text-sm"
                   >
@@ -920,11 +950,27 @@ export default function App() {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-white text-xs mb-1">
+                      Rotation: {centerImagePosition.rotation.toFixed(0)}°
+                    </label>
+                    <input
+                      type="range"
+                      min="-180"
+                      max="180"
+                      step="1"
+                      value={centerImagePosition.rotation}
+                      onChange={(e) => updateCenterImagePosition('rotation', Number(e.target.value))}
+                      className="w-full h-2 bg-cyan-300/30 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                    />
+                  </div>
+
                   <button
                     onClick={() => {
                       updateCenterImagePosition('x', 0);
                       updateCenterImagePosition('y', 0);
                       updateCenterImagePosition('scale', 1);
+                      updateCenterImagePosition('rotation', 0);
                     }}
                     className="w-full bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-2 rounded-lg transition-all text-sm"
                   >

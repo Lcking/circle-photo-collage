@@ -127,6 +127,11 @@ export const ShatteredFragments = memo(function ShatteredFragments({
         const imageX = (100 - imageSize) / 2 + (position.x + fragmentOffsetX) * 50;
         const imageY = (100 - imageSize) / 2 + (position.y + fragmentOffsetY) * 50;
 
+        // 计算旋转变换（围绕图片中心旋转）
+        const centerX = imageX + imageSize / 2;
+        const centerY = imageY + imageSize / 2;
+        const transform = `rotate(${position.rotation} ${centerX} ${centerY})`;
+
         const maskId = `shard-${i}-${j}`;
 
         result.push(
@@ -142,6 +147,7 @@ export const ShatteredFragments = memo(function ShatteredFragments({
               y={imageY}
               width={imageSize}
               height={imageSize}
+              transform={transform}
               preserveAspectRatio="xMidYMid slice"
               mask={`url(#${maskId})`}
             />

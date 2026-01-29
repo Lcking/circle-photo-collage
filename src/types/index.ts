@@ -6,4 +6,5 @@ export interface ImagePosition {
   x: number;
   y: number;
   scale: number;
+  rotation: number;
 }
